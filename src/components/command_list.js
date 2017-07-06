@@ -20,6 +20,7 @@ class CommandList extends Component {
             return (
                 <CommandListItem key={command.commandName} commandName={command.commandName}
                                  commandState={command.commandState}
+                                 commandArgs={command.commandArgs}
                                  commandSetupConfig={command.commandSetupConfig}/>
             );
 

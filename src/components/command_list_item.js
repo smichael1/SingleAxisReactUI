@@ -4,6 +4,7 @@
 import React, {Component} from 'react';
 
 import axios from 'axios';
+import CommandArg from './command_arg';
 
 
 class CommandListItem extends Component {
@@ -12,13 +13,42 @@ class CommandListItem extends Component {
     constructor(props) {
         super(props);
         this.sendCommand = this.sendCommand.bind(this);
+
+    }
+
+    renderArgs() {
+
+        return this.props.commandArgs.map((arg) => {
+
+            return (
+                <CommandArg key={arg.argName} argName={arg.argName} onUpdate={this.onUpdate.bind(this)}/>
+            );
+
+        });
+
+    }
+
+    onUpdate(data) {
+        this.setState(data);
     }
 
     sendCommand() {
 
-        console.log(this.props.commandSetupConfig);
-        axios.post('http://localhost:9000/command', {commandSetupConfig: this.props.commandSetupConfig})
-            .then(response => console.log(response));
+        console.log(this.state);
+
+        var arr = [];
+        Object.keys(this.state).map((key) =>
+            arr.push({
+                argName: key,
+                argValue: this.state[key]
+            })
+        );
+
+        axios.post('http://localhost:9000/command', {
+                commandSetupConfig: this.props.commandSetupConfig,
+                commandArgs: arr
+            }
+        ).then(response => console.log(response));
 
     }
 
@@ -27,7 +57,9 @@ class CommandListItem extends Component {
 
             <tr>
                 <td>{this.props.commandName}</td>
-                <td><div className="form-group">Position: <input type="text" className="form-control"  placeholder="Enter Position" /> meters</div></td>
+                <td>
+                    {this.renderArgs()}
+                </td>
                 <td><button type="button" className="btn btn-primary" onClick={() => this.sendCommand()}>Submit</button></td>
                 <td>{this.props.commandState}</td>
             </tr>
