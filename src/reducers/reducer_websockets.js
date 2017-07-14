@@ -3,14 +3,14 @@
  */
 
 
-import {ActionTypes} from '../websockets';
+import {WebsocketActionTypes} from '../websockets';
 
 
 export default function(state = [], action) {
 
     switch (action.type) {
 
-        case ActionTypes.RECEIVED_WEBSOCKET_DATA:
+        case WebsocketActionTypes.RECEIVE:
             console.log('websocket received data: ' + action.payload);
 
             const payload = JSON.parse(action.payload);
@@ -24,7 +24,7 @@ export default function(state = [], action) {
             */
             return payload;
 
-        case ActionTypes.WEBSOCKET_CONNECTED:
+        case WebsocketActionTypes.CONNECTED:
             console.log('websocket connected: ' + action.payload);
             return state;
     }

@@ -1,42 +1,39 @@
 /**
  * Created by smichaels on 6/27/17.
  */
-const NO_CONNECTION = null
 
-export default createWebsocketMiddleware
+export default reduxWebsocketMiddleware
 
-export const ActionTypes = {
-    WEBSOCKET_CONNECTED: '@@redux-websocket/WEBSOCKET_CONNECTED',
-    WEBSOCKET_DISCONNECTED: '@@redux-websocket/WEBSOCKET_DISCONNECTED',
-    WEBSOCKET_ERROR: '@@redux-websocket/WEBSOCKET_ERROR',
-    RECEIVED_WEBSOCKET_DATA: '@@redux-websocket/RECEIVED_WEBSOCKET_DATA',
-    WEBSOCKET_SEND: '@@redux-websocket/WEBSOCKET_SEND'
+export const WebsocketActionTypes = {
+    CONNECTED: 'redux-websocket-middleware::CONNECTED',
+    DISCONNECTED: 'redux-websocket-middleware::DISCONNECTED',
+    ERROR: 'redux-websocket-middleware::ERROR',
+    RECEIVE: 'redux-websocket-middleware::RECEIVE',
+    SEND: 'redux-websocket-middleware::SEND'
 }
 
-export function createWebsocketMiddleware (options = {}) {
-    const connections = {}
+export function reduxWebsocketMiddleware (endpoint) {
 
     return function (store) {
-        if (options.defaultEndpoint) {
-            setupSocket(options.defaultEndpoint)
-        }
+
+        const connection = setupSocket(endpoint);
+
 
         return function (next) {
             return function (action) {
 
-                if (!isSocketAction(action)) {
+                if (!isWebsocketAction(action)) {
                     return next(action)
                 }
 
                 console.log('this is a socket action');
 
-                const connection = connections[options.defaultEndpoint]
 
-                if (connection === NO_CONNECTION && !options.defaultEndpoint) {
+                if (endpoint === null) {
                     throw new Error(undefinedEndpointErrorMessage(action))
                 }
 
-                if (action.type == ActionTypes.WEBSOCKET_SEND) {
+                if (action.type == WebsocketActionTypes.SEND) {
                     console.log('sending message: ' + action.payload + ' to server');
 
                     const result = JSON.stringify(action);
@@ -57,86 +54,70 @@ export function createWebsocketMiddleware (options = {}) {
             }
 
             connection.websocket.onmessage = (function (evt) {
-                store.dispatch(createMessageAction(endpoint, evt))
+                store.dispatch(messageActionCreator(evt))
             })
 
             connection.websocket.onopen = (function () {
                 console.log('onopen called');
-                store.dispatch(createConnectionAction(endpoint))
+                store.dispatch(openActionCreator())
             })
 
             connection.websocket.onclose = (function () {
-                store.dispatch(createDisconnectionAction(endpoint))
+                store.dispatch(closeActionCreator())
             }),
 
             connection.websocket.onerror = (function (error) {
-                store.dispatch(createErrorAction(endpoint, error))
+                store.dispatch(errorActionCreator(error))
             })
-
-
-            connections[endpoint] = connection
 
             return connection
         }
     }
 }
 
-export function isSocketAction (action) {
+export function isWebsocketAction (action) {
 
-    console.log(action);
     if (!action) return false;
-    console.log(action.meta);
-    if (!action.meta) return false;
-    console.log(action.meta.websocket);
-    if (!action.meta.websocket) return false;
+    if (!action.type) return false;
 
     return Boolean([
-            ActionTypes.WEBSOCKET_CONNECTED,
-            ActionTypes.WEBSOCKET_DISCONNECTED,
-            ActionTypes.RECEIVED_WEBSOCKET_DATA,
-            ActionTypes.WEBSOCKET_ERROR,
-            ActionTypes.WEBSOCKET_SEND
-        ].indexOf(action.type) > -1);
+            WebsocketActionTypes.CONNECTED,
+            WebsocketActionTypes.DISCONNECTED,
+            WebsocketActionTypes.RECEIVE,
+            WebsocketActionTypes.ERROR,
+            WebsocketActionTypes.SEND
+        ].indexOf(action.type) >= 0);
 }
 
-function createConnectionAction (endpoint) {
+function openActionCreator () {
     return {
-        type: ActionTypes.WEBSOCKET_CONNECTED,
-        meta: { websocket: endpoint }
+        type: WebsocketActionTypes.CONNECTED
     }
 }
 
-function createDisconnectionAction (endpoint) {
+function closeActionCreator () {
     return {
-        type: ActionTypes.WEBSOCKET_DISCONNECTED,
-        meta: { websocket: endpoint }
+        type: WebsocketActionTypes.DISCONNECTED
     }
 }
 
-function createErrorAction (endpoint, error) {
+function errorActionCreator (error) {
     return {
-        type: ActionTypes.WEBSOCKET_ERROR,
-        payload: new Error(error),
-        meta: { websocket: endpoint, error: true }
+        type: WebsocketActionTypes.ERROR,
+        payload: new Error(error)
     }
 }
 
-function createMessageAction (endpoint, evt) {
+function messageActionCreator (evt) {
 
-    console.log('Creating incoming message action: ' + evt.data)
-
+    //console.log('Creating incoming message action: ' + evt.data)
 
     return {
-        type: ActionTypes.RECEIVED_WEBSOCKET_DATA,
-        payload: evt.data,
-        meta: { websocket: endpoint }
+        type: WebsocketActionTypes.RECEIVE,
+        payload: evt.data
     }
 }
 
 function undefinedEndpointErrorMessage (action) {
-    return `Whoops! You tried to dispatch an action to a socket instance that
-  doesn't exist, as you didn't specify an endpoint in the action itself:
-  ${JSON.stringify(action, null, 4)}
-  Or you didn't set the 'defaultEndpoint' config option when creating your
-  middleware instance.`
+    return `No endpoint defined: ${JSON.stringify(action, null, 4)}`
 }

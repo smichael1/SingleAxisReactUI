@@ -8,12 +8,10 @@ import App from './components/app';
 import reducers from './reducers';
 
 
-import { createWebsocketMiddleware } from './websockets';
+import { reduxWebsocketMiddleware } from './websockets';
 
 
-const socketMiddleware = createWebsocketMiddleware({
-    defaultEndpoint: "ws://localhost:9000/ws"
-})
+const socketMiddleware = reduxWebsocketMiddleware("ws://localhost:9000/ws");
 
 //const middleware = applyMiddleware(socketMiddleware);
 

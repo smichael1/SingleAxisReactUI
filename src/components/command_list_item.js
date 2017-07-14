@@ -37,12 +37,14 @@ class CommandListItem extends Component {
         console.log(this.state);
 
         var arr = [];
-        Object.keys(this.state).map((key) =>
-            arr.push({
-                argName: key,
-                argValue: this.state[key]
-            })
-        );
+        if (this.state) {
+            Object.keys(this.state).map((key) =>
+                arr.push({
+                    argName: key,
+                    argValue: this.state[key]
+                })
+            );
+        }
 
         axios.post('http://localhost:9000/command', {
                 commandSetupConfig: this.props.commandSetupConfig,
