@@ -37,7 +37,6 @@ class App extends Component {
 
             <div>
                 <LoadButton />
-                <WsSendButton />
             </div>
         </div>
 

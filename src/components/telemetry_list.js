@@ -19,7 +19,7 @@ class TelemetryList extends Component {
         return this.props.telemetry.map((telemetry) => {
 
             return (
-                <TelemetryListItem key={telemetry.field} fieldName={telemetry.field} fieldValue={telemetry.value}
+                <TelemetryListItem key={telemetry.field} source={telemetry.source} fieldName={telemetry.field} fieldValue={telemetry.value}
                                  fieldUnits={telemetry.units} />
             );
 
@@ -33,6 +33,7 @@ class TelemetryList extends Component {
                 <table className="table">
                     <thead>
                     <tr>
+                        <th>Source</th>
                         <th>Field</th>
                         <th>Value</th>
                         <th>Units</th>

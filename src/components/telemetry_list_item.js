@@ -3,12 +3,13 @@
  */
 import React from 'react';
 
-const TelemetryListItem = ({fieldName, fieldValue, fieldUnits}) => {
+const TelemetryListItem = ({source, fieldName, fieldValue, fieldUnits}) => {
 
 
     return (
 
         <tr>
+            <td>{source}</td>
             <td>{fieldName}</td>
             <td>{fieldValue}</td>
             <td>{fieldUnits}</td>

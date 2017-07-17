@@ -17,9 +17,11 @@ class CommandList extends Component {
 
         return this.props.commands.map((command) => {
 
+            const commandState = (this.props.commandStatus && this.props.commandStatus.commandSetupConfig == command.commandSetupConfig) ? this.props.commandStatus.overallStatus : command.commandState
+            
             return (
                 <CommandListItem key={command.commandName} commandName={command.commandName}
-                                 commandState={command.commandState}
+                                 commandState={commandState}
                                  commandArgs={command.commandArgs}
                                  commandSetupConfig={command.commandSetupConfig}/>
             );
@@ -38,7 +40,7 @@ class CommandList extends Component {
                     <th>Command</th>
                     <th>Arguments</th>
                     <th> </th>
-                    <th>Command State</th>
+                    <th>Submit Status</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -53,7 +55,8 @@ class CommandList extends Component {
 
 function mapStateToProps(state) {
     return {
-        commands: state.commands
+        commands: state.commands,
+        commandStatus: state.commandStatus
     }
 }
 
