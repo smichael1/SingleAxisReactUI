@@ -34,10 +34,15 @@
     "lodash": "^3.10.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
+    "react-file-input": "^0.2.5",
+    "react-fileupload": "^2.4.0",
     "react-redux": "4.3.0",
     "react-router": "^2.0.1",
+    "react-tabs": "^1.1.0",
+    "react-upload-file": "^2.0.0-beta.6",
     "redux": "^3.0.4",
-    "redux-promise": "^0.5.3"
+    "redux-promise": "^0.5.3",
+    "webpack-css-loaders": "^1.0.0"
   },
   "bugs": {
     "url": "https://github.com/StephenGrider/ReduxSimpleStarter/issues"

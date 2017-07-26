@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import CommandList from './command_list';
 import TelemetryList from './telemetry_list';
 import LoadButton from './load_button';
-import WsSendButton from './ws_send_button';
+import LoadConfigButton from './load_config_button';
+import ConfigList from './config_list';
+
 
 class App extends Component {
 
@@ -13,30 +15,50 @@ class App extends Component {
 
       return (
         <div>
+
           <h1>Single Axis Assembly</h1>
            <div className="panel panel-default">
 
-          <div id="commandSection" className="panel-body">
-            <h2>Commands</h2>
-
-            <CommandList />
-          </div>
+                <div id="commandSection" className="panel-body">
+                    <div className="pull-right">
+                      <LoadButton />
+                    </div>
+                    <h2>Commands</h2>
+                    <CommandList />
                 </div>
+            </div>
+            <div className="panel panel-default">
+                <div id="telemetrySection" className="panel-body">
+                    <div className="pull-right">
+                        Mode: <button type="button" className="btn btn-success">Normal</button>
+                    </div>
+                    <h2>Telemetry</h2>
+                    <TelemetryList />
+                </div>
+
+            </div>
+
+
             <div className="panel panel-default">
 
-            <div id="telemetrySection" className="panel-body">
+                <div id="configSection" className="panel-body">
 
-                <div className="pull-right">
-                    Mode: <button type="button" className="btn btn-success">Normal</button>
+                    <h2>Configuration</h2>
+                    <div className="pull-right">
+                        <LoadConfigButton configFile="singleAxis" />
+                    </div>
+
+                    <h3>Assembly Config</h3>
+                    <ConfigList target="assembly"/>
+                    <div className="pull-right">
+                        <LoadConfigButton configFile="galilHCD" />
+                    </div>
+                    <h3>GalilHCD Config</h3>
+                    <ConfigList target="hcd"/>
+
+
+
                 </div>
-                <h2>Telemetry</h2>
-                <TelemetryList />
-          </div>
-
-                </div>
-
-            <div>
-                <LoadButton />
             </div>
         </div>
 
