@@ -49,12 +49,12 @@ class App extends Component {
                     </div>
 
                     <h3>Assembly Config</h3>
-                    <ConfigList target="assembly"/>
+                    <ConfigList target="singleAxis"/>
                     <div className="pull-right">
                         <LoadConfigButton configFile="galilHCD" />
                     </div>
                     <h3>GalilHCD Config</h3>
-                    <ConfigList target="hcd"/>
+                    <ConfigList target="galilHCD"/>
 
 
 

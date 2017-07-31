@@ -16,7 +16,7 @@ export function reduxWebsocketMiddleware (endpoint) {
 
     return function (store) {
 
-        const connection = setupSocket(endpoint);
+        var connection = setupSocket(endpoint);
 
 
         return function (next) {
@@ -26,7 +26,7 @@ export function reduxWebsocketMiddleware (endpoint) {
                     return next(action)
                 }
 
-                console.log('this is a socket action');
+                console.log('this is a socket action: ' + action.type);
 
 
                 if (endpoint === null) {
@@ -39,6 +39,14 @@ export function reduxWebsocketMiddleware (endpoint) {
                     const result = JSON.stringify(action);
 
                     connection.websocket.send(result);
+                } else if (action.type == WebsocketActionTypes.DISCONNECTED) {
+                    if (connection.websocket != null) {
+                        connection.websocket.close();
+                        connection.websocket = null;
+                    }
+                    connection = setupSocket(endpoint);
+
+
                 } else {
                     return next(action)
                 }
